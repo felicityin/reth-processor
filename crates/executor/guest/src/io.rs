@@ -202,7 +202,11 @@ pub trait WitnessInput {
 
         for (hashed_address, storage_trie) in state.storage_tries.iter() {
             let account =
-                state.state_trie.get_rlp::<TrieAccount>(hashed_address.as_slice()).unwrap();
+                if let Ok(a) = state.state_trie.get_rlp::<TrieAccount>(hashed_address.as_slice()) {
+                    a
+                } else {
+                    Some(TrieAccount::default())
+                };
             let storage_root = account.map_or(EMPTY_ROOT_HASH, |a| a.storage_root);
             if storage_root != storage_trie.hash() {
                 // return Err(ClientError::MismatchedStorageRoot);
