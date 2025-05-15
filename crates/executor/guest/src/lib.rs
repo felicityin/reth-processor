@@ -27,7 +27,12 @@ pub fn verify_block_hash(input: &Vec<u8>) -> FixedBytes<32> {
         Arc::new((&input.genesis).try_into().unwrap()),
         input.custom_beneficiary,
     );
-    let header = executor.execute(input).expect("failed to execute client");
-    let block_hash = header.hash_slow();
+    let block_hash = match executor.execute(input) {
+        Ok(header) => header.hash_slow(),
+        Err(e) => {
+            println!("Failed to execute block: {:?}", e);
+            return FixedBytes::default();
+        }
+    };
     block_hash
 }
