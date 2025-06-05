@@ -2,6 +2,8 @@
 members = [
     "bin/host",
     "bin/eth-proofs",
+    "bin/guest-aggregation",
+    "bin/aggregation",
     "crates/executor/guest",
     "crates/executor/host",
     "crates/mpt",

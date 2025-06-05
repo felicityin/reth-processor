@@ -50,6 +50,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "aggregation"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "dotenv",
+ "eyre",
+ "futures-util",
+ "provider",
+ "serde",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "url",
+ "zkm-build",
+ "zkm-sdk",
+]
+
+[[package]]
 name = "ahash"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3447,6 +3465,14 @@ dependencies = [
  "ff 0.13.1",
  "rand_core 0.6.4",
  "subtle",
+]
+
+[[package]]
+name = "guest-aggregation"
+version = "1.0.0"
+dependencies = [
+ "sha2",
+ "zkm-zkvm",
 ]
 
 [[package]]
@@ -10387,6 +10413,8 @@ dependencies = [
  "getrandom 0.2.16",
  "lazy_static",
  "libm",
+ "p3-field",
+ "p3-koala-bear",
  "rand 0.8.5",
  "serde",
  "sha2",
