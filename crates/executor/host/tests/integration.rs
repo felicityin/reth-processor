@@ -34,7 +34,7 @@ async fn test_e2e_optimism() {
     // Setup the client executor.
     let guest_executor = guest_executor::executor::OpClientExecutor::optimism(chain_spec);
 
-    run_e2e::<_, op_alloy_network::Optimism>(
+    run_e2e::<_, OpChainSpec, op_alloy_network::Optimism>(
         host_executor,
         guest_executor,
         "RPC_10",
@@ -75,7 +75,7 @@ async fn run_eth_e2e(
     // Setup the client executor.
     let guest_executor = EthClientExecutor::eth(chain_spec, custom_beneficiary);
 
-    run_e2e::<_, Ethereum>(
+    run_e2e::<_, ChainSpec, Ethereum>(
         host_executor,
         guest_executor,
         env_var_key,
@@ -86,8 +86,8 @@ async fn run_eth_e2e(
     .await;
 }
 
-async fn run_e2e<C, N>(
-    host_executor: HostExecutor<C>,
+async fn run_e2e<C, CS, N>(
+    host_executor: HostExecutor<C, CS>,
     guest_executor: ClientExecutor<C>,
     env_var_key: &str,
     block_number: u64,
@@ -117,11 +117,19 @@ async fn run_e2e<C, N>(
         Url::parse(std::env::var(env_var_key).unwrap().as_str()).expect("invalid rpc url");
     let provider = RootProvider::<N>::new_http(rpc_url);
 
-    let rpc_db = RpcDb::new(provider.clone(), block_number - 1);
+    let rpc_db = RpcDb::new(provider.clone(), provider.clone(), block_number - 1);
 
     // Execute the host.
     let client_input = host_executor
-        .execute(block_number, &rpc_db, &provider, genesis.clone(), custom_beneficiary, false)
+        .execute(
+            block_number,
+            &rpc_db,
+            &provider,
+            &provider,
+            genesis.clone(),
+            custom_beneficiary,
+            false,
+        )
         .await
         .expect("failed to execute host");
 

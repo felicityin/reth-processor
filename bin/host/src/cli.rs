@@ -85,6 +85,13 @@ impl HostArgs {
         });
         let debug_rpc_url = debug_rpc_url.or_else(|| rpc_url.clone());
 
+        let witness_rpc_url = self.provider.witness_rpc_url.clone().or_else(|| {
+            std::env::var(format!("WITNESS_RPC_{}", chain_id))
+                .ok()
+                .and_then(|url| Url::parse(&url).ok())
+        });
+        let witness_rpc_url = witness_rpc_url.or_else(|| rpc_url.clone());
+
         let genesis = if let Some(genesis_path) = &self.genesis_path {
             let genesis_json = fs::read_to_string(genesis_path)
                 .map_err(|err| eyre::eyre!("Failed to read genesis file: {err}"))?;
@@ -101,6 +108,7 @@ impl HostArgs {
             genesis,
             rpc_url,
             debug_rpc_url,
+            witness_rpc_url,
             cache_dir: self.cache_dir.clone(),
             custom_beneficiary: self.custom_beneficiary,
             prove_mode: self.prove.then_some(ZKMProofKind::Compressed),
@@ -123,6 +131,10 @@ pub struct ProviderArgs {
     /// DEBUG_RPC_{chain_id} env var. If DEBUG_RPC_{chain_id} is not set, will use the rpc_url.
     #[clap(long)]
     pub debug_rpc_url: Option<Url>,
+    /// The debug rpc url used to the block exection witness. If not provided, will use the
+    /// WITNESS_RPC_{chain_id} env var. If WITNESS_RPC_{chain_id} is not set, will use the rpc_url.
+    #[clap(long)]
+    pub witness_rpc_url: Option<Url>,
     /// The chain ID. If not provided, requires the rpc_url argument to be provided.
     #[clap(long)]
     pub chain_id: Option<u64>,

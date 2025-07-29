@@ -8,11 +8,11 @@ use reth_errors::ProviderError;
 use reth_ethereum_primitives::EthPrimitives;
 use reth_primitives_traits::NodePrimitives;
 use reth_trie::{TrieAccount, EMPTY_ROOT_HASH};
+use reth_trie_zkvm::ZkvmTrie;
 use revm::{
     state::{AccountInfo, Bytecode},
     DatabaseRef,
 };
-use reth_trie_zkvm::ZkvmTrie;
 use revm_primitives::{keccak256, Address, B256, U256};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;

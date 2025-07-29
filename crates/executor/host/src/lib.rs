@@ -1,7 +1,6 @@
 #![cfg_attr(not(test), allow(unused_crate_dependencies))]
 
 use alloy_chains::Chain;
-use reth_evm::{precompiles::PrecompilesMap, Database, EvmEnv, EvmFactory};
 pub use error::Error as HostError;
 use guest_executor::custom::CustomEvmFactory;
 use primitives::genesis::Genesis;
@@ -56,6 +55,7 @@ pub struct Config {
     pub genesis: Genesis,
     pub rpc_url: Option<Url>,
     pub debug_rpc_url: Option<Url>,
+    pub witness_rpc_url: Option<Url>,
     pub cache_dir: Option<PathBuf>,
     pub custom_beneficiary: Option<Address>,
     pub prove_mode: Option<ZKMProofKind>,
@@ -69,6 +69,7 @@ impl Config {
             genesis: Genesis::Mainnet,
             rpc_url: None,
             debug_rpc_url: None,
+            witness_rpc_url: None,
             cache_dir: None,
             custom_beneficiary: None,
             prove_mode: None,

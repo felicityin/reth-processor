@@ -34,7 +34,6 @@ reth-optimism-chainspec = { workspace = true, optional = true }
 reth-optimism-primitives = { workspace = true, optional = true, features = ["serde", "serde-bincode-compat"]}
 reth-errors.workspace = true
 reth-chainspec.workspace = true
-reth-stateless.workspace = true
 reth-trie-zkvm.workspace = true
 
 # revm

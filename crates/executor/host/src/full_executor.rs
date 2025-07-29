@@ -31,6 +31,7 @@ pub async fn build_executor<C, P>(
     elf: Vec<u8>,
     provider: Option<P>,
     debug_provider: Option<P>,
+    witness_provider: Option<P>,
     evm_config: C::EvmConfig,
     client: Arc<C::Prover>,
     hooks: C::Hooks,
@@ -42,9 +43,19 @@ where
 {
     if let Some(provider) = provider {
         let debug_provider = debug_provider.unwrap_or(provider.clone());
+        let witness_provider = witness_provider.unwrap_or(provider.clone());
         return Ok(Either::Left(
-            FullExecutor::try_new(provider, debug_provider, elf, evm_config, client, hooks, config)
-                .await?,
+            FullExecutor::try_new(
+                provider,
+                debug_provider,
+                witness_provider,
+                elf,
+                evm_config,
+                client,
+                hooks,
+                config,
+            )
+            .await?,
         ));
     }
 
@@ -202,6 +213,7 @@ where
 {
     provider: P,
     debug_provider: P,
+    witness_provider: P,
     host_executor: HostExecutor<C::EvmConfig, C::ChainSpec>,
     client: Arc<C::Prover>,
     pk: Arc<ZKMProvingKey>,
@@ -218,6 +230,7 @@ where
     pub async fn try_new(
         provider: P,
         debug_provider: P,
+        witness_provider: P,
         elf: Vec<u8>,
         evm_config: C::EvmConfig,
         client: Arc<C::Prover>,
@@ -236,6 +249,7 @@ where
         Ok(Self {
             provider,
             debug_provider,
+            witness_provider,
             host_executor: HostExecutor::new(
                 evm_config,
                 Arc::new(C::try_into_chain_spec(&config.genesis)?),
@@ -301,6 +315,7 @@ where
                         block_number,
                         &rpc_db,
                         &self.provider,
+                        &self.witness_provider,
                         self.config.genesis.clone(),
                         self.config.custom_beneficiary,
                         self.config.opcode_tracking,

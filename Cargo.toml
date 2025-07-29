@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "bin/host",
-    "bin/eth-proofs",
+    # "bin/eth-proofs",
     "crates/executor/guest",
     "crates/executor/host",
     "crates/mpt",
@@ -66,6 +66,7 @@ reth-optimism-evm = { git = "https://github.com/ziren-patches/reth", branch = "p
 reth-optimism-primitives = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
 reth-storage-errors = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
 reth-trie = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
+reth-trie-common = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
 reth-trie-zkvm = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
 reth-chainspec = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
 reth-optimism-chainspec = { git = "https://github.com/ziren-patches/reth", branch = "patch-1.5.1", default-features = false }
@@ -79,12 +80,14 @@ reth-stateless = { git = "https://github.com/ziren-patches/reth", branch = "patc
 
 # reth-primitives-traits = { path = "../patch/reth/crates/primitives-traits", default-features = false }
 # reth-consensus = { path = "../patch/reth/crates/consensus/consensus", default-features = false }
-# reth-evm = { path = "../patch/reth/crates/evm", default-features = false }
+# reth-evm = { path = "../patch/reth/crates/evm/evm", default-features = false }
 # reth-evm-ethereum = { path = "../patch/reth/crates/ethereum/evm", default-features = false }
 # reth-optimism-evm = { path = "../patch/reth/crates/optimism/evm", default-features = false }
 # reth-optimism-primitives = { path = "../patch/reth/crates/optimism/primitives", default-features = false }
 # reth-storage-errors = { path = "../patch/reth/crates/storage/errors", default-features = false }
 # reth-trie = { path = "../patch/reth/crates/trie/trie", default-features = false }
+# reth-trie-common = { path = "../patch/reth/crates/trie/common", default-features = false }
+# reth-trie-zkvm = { path = "../patch/reth/crates/trie/zkvm", default-features = false }
 # reth-chainspec = { path = "../patch/reth/crates/chainspec", default-features = false }
 # reth-optimism-chainspec = { path = "../patch/reth/crates/optimism/chainspec", default-features = false }
 # reth-execution-types = { path = "../patch/reth/crates/evm/execution-types", default-features = false }
@@ -93,6 +96,7 @@ reth-stateless = { git = "https://github.com/ziren-patches/reth", branch = "patc
 # reth-ethereum-primitives = { path = "../patch/reth/crates/ethereum/primitives", default-features = false, features = ["serde"] }
 # reth-optimism-consensus = { path = "../patch/reth/crates/optimism/consensus", default-features = false }
 # reth-optimism-forks = { path = "../patch/reth/crates/optimism/hardforks", default-features = false }
+# reth-stateless = { path = "../patch/reth/crates/stateless", default-features = false }
 
 # revm
 revm = { git = "https://github.com/ziren-patches/revm", branch = "patch-27.0.2", features = [

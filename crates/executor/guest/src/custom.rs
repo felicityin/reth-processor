@@ -22,7 +22,7 @@ use revm::{
     Context, Inspector, MainBuilder, MainContext,
 };
 use revm_primitives::{hardfork::SpecId, Address};
-use std::{fmt::Debug};
+use std::fmt::Debug;
 
 #[derive(Debug, Clone)]
 pub struct CustomEvmFactory {
@@ -40,8 +40,7 @@ impl CustomEvmFactory {
 }
 
 impl EvmFactory for CustomEvmFactory {
-    type Evm<DB: Database, I: revm::Inspector<Self::Context<DB>>> =
-        EthEvm<DB, I, PrecompilesMap>;
+    type Evm<DB: Database, I: revm::Inspector<Self::Context<DB>>> = EthEvm<DB, I, PrecompilesMap>;
 
     type Context<DB: Database> = Context<BlockEnv, TxEnv, CfgEnv, DB>;
 

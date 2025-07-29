@@ -1,30 +1,26 @@
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
-use crate::{error::SpawnedTaskError, HostError};
-use alloy_consensus::{BlockHeader, Header, TxReceipt};
-use alloy_evm::EthEvmFactory;
-use alloy_primitives::{Bloom, Sealable};
-use alloy_provider::{Network, Provider, ext::DebugApi};
+use crate::HostError;
+use alloy_consensus::{BlockHeader, Header};
+use alloy_primitives::{Sealable, B256};
+use alloy_provider::{ext::DebugApi, Network, Provider};
+use alloy_rlp::Decodable;
 use guest_executor::{
     custom::CustomEvmFactory, io::ClientExecutorInput, IntoInput, IntoPrimitives,
     ValidateBlockPostExecution,
 };
-use mpt::EthereumState;
-use primitives::{account_proof::eip1186_proof_to_account_proof, genesis::Genesis};
+use primitives::genesis::Genesis;
 use reth_chainspec::ChainSpec;
-use reth_evm::{
-    execute::{BasicBlockExecutor, Executor},
-    ConfigureEvm,
-};
-use reth_trie_zkvm::ZkvmTrie;
-use reth_stateless::{validation::stateless_validation_with_trie, ExecutionWitness, StatelessTrie};
+use reth_evm::{execute::Executor, ConfigureEvm};
 use reth_evm_ethereum::EthEvmConfig;
-use reth_execution_types::ExecutionOutcome;
 use reth_optimism_chainspec::OpChainSpec;
 use reth_optimism_evm::OpEvmConfig;
-use reth_primitives_traits::{Block, BlockBody};
-use reth_trie::KeccakKeyHasher;
-use revm::database::CacheDB;
+use reth_primitives_traits::{Block, NodePrimitives, RecoveredBlock};
+use reth_stateless::{
+    validation::StatelessValidationError, witness_db::WitnessDatabase, StatelessTrie,
+};
+use reth_trie_common::{HashedPostState, KeccakKeyHasher};
+use reth_trie_zkvm::ZkvmTrie;
 use revm_primitives::Address;
 use rpc_db::RpcDb;
 
@@ -67,8 +63,9 @@ impl<C: ConfigureEvm, CS> HostExecutor<C, CS> {
     pub async fn execute<P, N>(
         &self,
         block_number: u64,
-        rpc_db: &RpcDb<P, N>,
+        _rpc_db: &RpcDb<P, N>,
         provider: &P,
+        witness_provider: &P,
         genesis: Genesis,
         custom_beneficiary: Option<Address>,
         opcode_tracking: bool,
@@ -80,6 +77,7 @@ impl<C: ConfigureEvm, CS> HostExecutor<C, CS> {
     {
         let chain_id: u64 = (&genesis).try_into().unwrap();
         tracing::debug!("chain id: {}", chain_id);
+        _ = self.chain_spec.clone();
 
         // Fetch the current block and the previous block from the provider.
         tracing::info!("[{}] fetching the current block and the previous block", block_number);
@@ -98,33 +96,92 @@ impl<C: ConfigureEvm, CS> HostExecutor<C, CS> {
             .map(C::Primitives::into_primitive_block)?;
 
         tracing::info!("[{}] setting up the witness for the block executor", block_number);
+        let witness = witness_provider.debug_execution_witness(block_number.into()).await?;
 
-        let witness = provider.debug_execution_witness(
-            block_number.into(),
-        ).await?;
-
-        let (parent_state, bytecodes) = ZkvmTrie::new(&witness, previous_block.header().state_root()).unwrap();
+        tracing::info!("[{}] create state trie", block_number);
+        let (parent_state, bytecodes) =
+            ZkvmTrie::new(&witness, previous_block.header().state_root())?;
+        tracing::info!("[{}] create state trie done", block_number);
 
         let block = current_block
             .clone()
             .try_into_recovered()
-            .map_err(|_| HostError::FailedToRecoverSenders)
-            .unwrap();
+            .map_err(|_| HostError::FailedToRecoverSenders)?;
 
-        if std::env::var("DEBUG_HOST").is_ok() && std::env::var("DEBUG_HOST").unwrap() == "1" {
-            let block_hash = stateless_validation_with_trie::<ZkvmTrie, ChainSpec, C>(
-                &block.into_block(),
-                witness,
-                self.chain_spec.clone(),
-                self.evm_config,
-            ).unwrap();
-            tracing::info!("[{}] successfully validate the block, hash: {:?}", block_number, block_hash);
+        let mut ancestor_headers: Vec<Header> = witness
+            .headers
+            .iter()
+            .map(|serialized_header| {
+                let bytes = serialized_header.as_ref();
+                Header::decode(&mut &bytes[..]).map_err(|_| HostError::HeaderDeserializationFailed)
+            })
+            .collect::<Result<_, _>>()?;
+        // Sort the headers by their block number to ensure that they are in
+        // ascending order.
+        ancestor_headers.sort_by_key(|header| header.number());
+
+        // if std::env::var("DEBUG_HOST").is_ok() && std::env::var("DEBUG_HOST").unwrap() == "1" {
+        {
+            let current_block = current_block
+                .clone()
+                .try_into_recovered()
+                .map_err(|_| HostError::FailedToRecoverSenders)?;
+
+            // Check that the ancestor headers form a contiguous chain and are not just random
+            // headers.
+            let ancestor_hashes =
+                self.compute_ancestor_hashes(&current_block, &ancestor_headers)?;
+
+            // Get the last ancestor header and retrieve its state root.
+            //
+            // There should be at least one ancestor header, this is because we need the parent
+            // header to retrieve the previous state root.
+            // The edge case here would be the genesis block, but we do not create proofs for the
+            // genesis block.
+            let pre_state_root = match ancestor_headers.last() {
+                Some(prev_header) => prev_header.state_root,
+                None => return Err(HostError::MissingAncestorHeader),
+            };
+
+            // First verify that the pre-state reads are correct
+            let (mut trie, bytecode) = ZkvmTrie::new(&witness, pre_state_root)?;
+
+            // Create an in-memory database that will use the reads to validate the block
+            let db = WitnessDatabase::new(&trie, bytecode, ancestor_hashes);
+
+            // Execute the block
+            let executor = self.evm_config.executor(db);
+            let output = executor.execute(&current_block)?;
+
+            // Validate the block post execution.
+            tracing::info!("validating the block post execution");
+            C::Primitives::validate_block_post_execution(&block, &genesis, &output)?;
+
+            // Compute and check the post state root
+            let hashed_state =
+                HashedPostState::from_bundle_state::<KeccakKeyHasher>(&output.state.state);
+            let state_root = trie.calculate_state_root(hashed_state)?;
+            if state_root != current_block.state_root() {
+                return Err(HostError::StateRootMismatch(
+                    state_root,
+                    current_block.header().state_root(),
+                ));
+            }
+
+            // Return block hash
+            let block_hash = current_block.hash_slow();
+
+            tracing::info!(
+                "[{}] successfully validate the block, hash: {:?}",
+                block_number,
+                block_hash
+            );
         }
 
         // Create the client input.
         let client_input = ClientExecutorInput {
             current_block: C::Primitives::into_input_block(current_block),
-            ancestor_headers: vec![], // vec![C::Primitives::into_primitive_header(previous_block)],
+            ancestor_headers,
             parent_state,
             state_requests: Default::default(),
             bytecodes: bytecodes.into_values().collect(),
@@ -135,5 +192,49 @@ impl<C: ConfigureEvm, CS> HostExecutor<C, CS> {
         tracing::info!("[{}] successfully generated client input", block_number);
 
         Ok(client_input)
+    }
+
+    /// Verifies the contiguity, number of ancestor headers and extracts their hashes.
+    ///
+    /// This function is used to prepare the data required for the `BLOCKHASH`
+    /// opcode in a stateless execution context.
+    ///
+    /// It verifies that the provided `ancestor_headers` form a valid, unbroken chain leading back
+    /// from    the parent of the `current_block`.
+    ///
+    /// Note: This function becomes obsolete if EIP-2935 is implemented.
+    /// Note: The headers are assumed to be in ascending order.
+    ///
+    /// If both checks pass, it returns a [`BTreeMap`] mapping the block number of each
+    /// ancestor header to its corresponding block hash.
+    fn compute_ancestor_hashes(
+        &self,
+        current_block: &RecoveredBlock<<C::Primitives as NodePrimitives>::Block>,
+        ancestor_headers: &[Header],
+    ) -> Result<BTreeMap<u64, B256>, StatelessValidationError> {
+        let mut ancestor_hashes = BTreeMap::new();
+
+        let mut parent_hash = current_block.header().parent_hash();
+        let mut number = current_block.header().number();
+
+        // Next verify that headers supplied are contiguous
+        for parent_header in ancestor_headers.iter().rev() {
+            ancestor_hashes.insert(parent_header.number, parent_hash);
+
+            // Blocks must be contiguous
+            if parent_hash != parent_header.hash_slow() {
+                return Err(StatelessValidationError::InvalidAncestorChain);
+            }
+
+            // Header number should be contiguous
+            if parent_header.number + 1 != number {
+                return Err(StatelessValidationError::InvalidAncestorChain);
+            }
+
+            parent_hash = parent_header.parent_hash();
+            number = parent_header.number();
+        }
+
+        Ok(ancestor_hashes)
     }
 }
