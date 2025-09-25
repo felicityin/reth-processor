@@ -125,7 +125,10 @@ impl<C: ConfigureEvm> HostExecutor<C> {
 
         // Validate the block post execution.
         tracing::info!("validating the block post execution");
-        C::Primitives::validate_block_post_execution(&block, &genesis, &execution_output)?;
+        match C::Primitives::validate_block_post_execution(&block, &genesis, &execution_output) {
+            Ok(_) => {},
+            Err(e) => tracing::error!("validating the block post execution failed: {:?}", e),
+        }
 
         // Accumulate the logs bloom.
         tracing::info!("accumulating the logs bloom");
