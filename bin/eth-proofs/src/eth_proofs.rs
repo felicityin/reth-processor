@@ -122,13 +122,13 @@ impl EthProofsClient {
 
 impl ExecutionHooks for EthProofsClient {
     async fn on_execution_start(&self, block_number: u64) -> eyre::Result<()> {
-        self.queued(block_number).await;
+        // self.queued(block_number).await;
 
         Ok(())
     }
 
     async fn on_proving_start(&self, block_number: u64) -> eyre::Result<()> {
-        self.proving(block_number).await;
+        // self.proving(block_number).await;
 
         Ok(())
     }
@@ -143,7 +143,7 @@ impl ExecutionHooks for EthProofsClient {
         cycles: u64,
         proving_duration: Duration,
     ) -> eyre::Result<()> {
-        self.proved(proof_bytes, block_number, cycles, proving_duration.as_secs_f32(), vk).await;
+        // self.proved(proof_bytes, block_number, cycles, proving_duration.as_secs_f32(), vk).await;
 
         Ok(())
     }
