@@ -25,3 +25,6 @@ bn = { git = "https://github.com/ziren-patches/bn", branch = "patch-0.6.0", pack
 k256 = { git = "https://github.com/ziren-patches/elliptic-curves", branch = "patch-k256-0.13.4" }
 p256 = { git = "https://github.com/ziren-patches/elliptic-curves", branch = "patch-p256-0.13.2" }
 alloy-primitives-v1-2-1 = { git = "https://github.com/ziren-patches/core.git", package = "alloy-primitives", branch = "patch-alloy-primitives-1.2.1" }
+
+[patch."https://github.com/ProjectZKM/Ziren"]
+zkm-zkvm = { git = "https://github.com/felicityin/Ziren", branch = "map-to-group" }

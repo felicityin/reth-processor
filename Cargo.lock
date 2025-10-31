@@ -352,7 +352,7 @@ dependencies = [
  "serde",
  "sha3",
  "tiny-keccak",
- "zkm-zkvm",
+ "zkm-zkvm 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
 ]
 
 [[package]]
@@ -1570,7 +1570,7 @@ dependencies = [
  "pairing 0.23.0",
  "rand_core 0.6.4",
  "subtle",
- "zkm-lib",
+ "zkm-lib 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
 ]
 
 [[package]]
@@ -2516,7 +2516,7 @@ checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 [[package]]
 name = "ecdsa"
 version = "0.16.9"
-source = "git+https://github.com/ziren-patches/signatures.git?branch=patch-ecdsa-0.16.9#da0cd8753b243e09acf82f8e58f8da0e28e7287d"
+source = "git+https://github.com/ziren-patches/signatures?branch=patch-ecdsa-0.16.9#da0cd8753b243e09acf82f8e58f8da0e28e7287d"
 dependencies = [
  "der",
  "digest 0.10.7",
@@ -4467,7 +4467,7 @@ dependencies = [
  "serdect",
  "sha2 0.10.9",
  "signature",
- "zkm-lib",
+ "zkm-lib 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
 ]
 
 [[package]]
@@ -5345,7 +5345,7 @@ dependencies = [
  "hex",
  "primeorder",
  "sha2 0.10.9",
- "zkm-lib",
+ "zkm-lib 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
 ]
 
 [[package]]
@@ -7440,7 +7440,7 @@ dependencies = [
 [[package]]
 name = "rfc6979"
 version = "0.4.0"
-source = "git+https://github.com/ziren-patches/signatures.git?branch=patch-ecdsa-0.16.9#da0cd8753b243e09acf82f8e58f8da0e28e7287d"
+source = "git+https://github.com/ziren-patches/signatures?branch=patch-ecdsa-0.16.9#da0cd8753b243e09acf82f8e58f8da0e28e7287d"
 dependencies = [
  "hmac",
  "subtle",
@@ -8484,7 +8484,7 @@ dependencies = [
  "num-bigint 0.4.6",
  "rand 0.8.5",
  "rustc-hex",
- "zkm-lib",
+ "zkm-lib 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
 ]
 
 [[package]]
@@ -10346,7 +10346,7 @@ dependencies = [
 [[package]]
 name = "zkm-build"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "anyhow",
  "cargo_metadata",
@@ -10358,7 +10358,7 @@ dependencies = [
 [[package]]
 name = "zkm-core-executor"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "anyhow",
  "bincode",
@@ -10392,14 +10392,14 @@ dependencies = [
  "typenum",
  "vec_map",
  "zkm-curves",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-stark",
 ]
 
 [[package]]
 name = "zkm-core-machine"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "bincode",
  "cbindgen",
@@ -10448,14 +10448,14 @@ dependencies = [
  "zkm-core-executor",
  "zkm-curves",
  "zkm-derive",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-stark",
 ]
 
 [[package]]
 name = "zkm-cuda"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "bincode",
  "ctrlc",
@@ -10473,7 +10473,7 @@ dependencies = [
 [[package]]
 name = "zkm-curves"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "cfg-if",
  "curve25519-dalek",
@@ -10488,17 +10488,30 @@ dependencies = [
  "serde",
  "snowbridge-amcl",
  "typenum",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-stark",
 ]
 
 [[package]]
 name = "zkm-derive"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "zkm-lib"
+version = "1.2.2"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
+dependencies = [
+ "bincode",
+ "cfg-if",
+ "elliptic-curve",
+ "serde",
+ "sha2 0.10.9",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
 ]
 
 [[package]]
@@ -10511,7 +10524,25 @@ dependencies = [
  "elliptic-curve",
  "serde",
  "sha2 0.10.9",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
+]
+
+[[package]]
+name = "zkm-primitives"
+version = "1.2.2"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
+dependencies = [
+ "bincode",
+ "hex",
+ "lazy_static",
+ "num-bigint 0.4.6",
+ "p3-field",
+ "p3-koala-bear",
+ "p3-monty-31",
+ "p3-poseidon2",
+ "p3-symmetric",
+ "serde",
+ "sha2 0.10.9",
 ]
 
 [[package]]
@@ -10535,7 +10566,7 @@ dependencies = [
 [[package]]
 name = "zkm-prover"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "anyhow",
  "bincode",
@@ -10563,7 +10594,7 @@ dependencies = [
  "tracing-subscriber 0.3.20",
  "zkm-core-executor",
  "zkm-core-machine",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-recursion-circuit",
  "zkm-recursion-compiler",
  "zkm-recursion-core",
@@ -10574,7 +10605,7 @@ dependencies = [
 [[package]]
 name = "zkm-recursion-circuit"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "hashbrown 0.14.5",
  "itertools 0.13.0",
@@ -10597,7 +10628,7 @@ dependencies = [
  "zkm-core-executor",
  "zkm-core-machine",
  "zkm-derive",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-recursion-compiler",
  "zkm-recursion-core",
  "zkm-recursion-gnark-ffi",
@@ -10607,7 +10638,7 @@ dependencies = [
 [[package]]
 name = "zkm-recursion-compiler"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "backtrace",
  "itertools 0.13.0",
@@ -10619,7 +10650,7 @@ dependencies = [
  "tracing",
  "vec_map",
  "zkm-core-machine",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-recursion-core",
  "zkm-recursion-derive",
  "zkm-stark",
@@ -10628,7 +10659,7 @@ dependencies = [
 [[package]]
 name = "zkm-recursion-core"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "backtrace",
  "cbindgen",
@@ -10662,14 +10693,14 @@ dependencies = [
  "zkhash",
  "zkm-core-machine",
  "zkm-derive",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-stark",
 ]
 
 [[package]]
 name = "zkm-recursion-derive"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -10678,7 +10709,7 @@ dependencies = [
 [[package]]
 name = "zkm-recursion-gnark-ffi"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "anyhow",
  "bincode",
@@ -10703,7 +10734,7 @@ dependencies = [
 [[package]]
 name = "zkm-sdk"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "alloy-signer",
  "alloy-signer-local",
@@ -10743,7 +10774,7 @@ dependencies = [
  "zkm-core-executor",
  "zkm-core-machine",
  "zkm-cuda",
- "zkm-primitives",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
  "zkm-prover",
  "zkm-stark",
 ]
@@ -10751,7 +10782,7 @@ dependencies = [
 [[package]]
 name = "zkm-stark"
 version = "1.2.2"
-source = "git+https://github.com/ProjectZKM/Ziren#0127cbf6bec786a20c1bfe038002f2dc743a140c"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
 dependencies = [
  "arrayref",
  "hashbrown 0.14.5",
@@ -10786,8 +10817,24 @@ dependencies = [
  "tracing-forest",
  "tracing-subscriber 0.3.20",
  "zkm-derive",
- "zkm-primitives",
- "zkm-zkvm",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
+ "zkm-zkvm 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
+]
+
+[[package]]
+name = "zkm-zkvm"
+version = "1.2.2"
+source = "git+https://github.com/felicityin/Ziren?branch=map-to-group#dc3048a55fd4d4ada7ab74cdf1218f6510464b8a"
+dependencies = [
+ "bincode",
+ "cfg-if",
+ "getrandom 0.2.16",
+ "lazy_static",
+ "rand 0.8.5",
+ "serde",
+ "sha2 0.10.9",
+ "zkm-lib 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
+ "zkm-primitives 1.2.2 (git+https://github.com/felicityin/Ziren?branch=map-to-group)",
 ]
 
 [[package]]
@@ -10803,8 +10850,8 @@ dependencies = [
  "rand 0.8.5",
  "serde",
  "sha2 0.10.9",
- "zkm-lib",
- "zkm-primitives",
+ "zkm-lib 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
+ "zkm-primitives 1.2.2 (git+https://github.com/ProjectZKM/Ziren)",
 ]
 
 [[package]]
