@@ -32,7 +32,7 @@ For the supported chains (Ethereum Mainnet and Sepolia, OP Stack Mainnet, and Li
 cargo run -r --bin host -- --block-number <block-number> --rpc-url <RPC> --chain-id <chain-id>
 
 # eg.
-cargo run -r --bin host -- --block-number 18884864 --rpc-url <RPC> --chain-id 1
+cargo run -r --bin host -- --block-number 24438200 --rpc-url <RPC> --chain-id 1
 ```
 
 The host CLI executes the block while fetching additional data necessary for offline execution. The same execution and verification logic is then run inside the zkVM. No actual proof is generated from this command, but it will print out a detailed execution report and statistics on the # of cycles to a CSV file (can be specified by the `--report-path` argument).
@@ -60,7 +60,7 @@ If you want to actually generate proofs, you can run the CLI using the `--prove`
 cargo run -r --bin host -- --block-number <block-number> --rpc-url <RPC> --chain-id <chain-id> --prove
 
 # eg.
-cargo run -r --bin host -- --block-number 18884864 --rpc-url <RPC> --chain-id 1 --prove
+cargo run -r --bin host -- --block-number 24438200 --rpc-url <RPC> --chain-id 1 --prove
 ```
 
 This will generate proofs locally on your machine. Given how large these programs are, it might take a while for the proof to generate.

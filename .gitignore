@@ -23,6 +23,7 @@ latest_proof.json
 elf
 program.bin
 stdin.bin
+vk.bin
 
 **.csv
 
